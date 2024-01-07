@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +29,7 @@ public class EjemploController {
 
     @Operation(summary = "Crea una persona", description = "Añade una persona a la colección", tags = {"personas"})
     @ApiResponse(responseCode = "201", description = "Persona añadida")
-    @ApiResponse(responseCode = "500", description = "Datos de persona no válidos")
+    @ApiResponse(responseCode = "400", description = "Datos de persona no válidos")
     @PostMapping("/persona")
     public ResponseEntity<Ejemplo> createEjemplo(@RequestBody Ejemplo ejemplo) {
         Ejemplo createdEjemplo = ejemploService.createEjemplo(ejemplo);
@@ -57,7 +56,7 @@ public class EjemploController {
     @Parameter(name = "id", description = "ID de la Persona", required = true, example = "1")
     @ApiResponse(responseCode = "200", description = "Persona actualizada")
     @ApiResponse(responseCode = "404", description = "Persona no encontrada")
-    @ApiResponse(responseCode = "400", description = "Persona no válida")
+    @ApiResponse(responseCode = "400", description = "Datos de persona no válidos")
     @PutMapping("/persona/{id}")
     public ResponseEntity<Ejemplo> updateEjemplo(@PathVariable Long id, @RequestBody Ejemplo ejemplo) {
         Optional<Ejemplo> optionalEjemplo = ejemploService.getEjemploById(id);
@@ -107,5 +106,8 @@ public class EjemploController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+
+
 }
 

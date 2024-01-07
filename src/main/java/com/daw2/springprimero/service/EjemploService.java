@@ -1,12 +1,11 @@
 package com.daw2.springprimero.service;
 
+import com.daw2.springprimero.exceptions.EjemploBadRequestException;
+import com.daw2.springprimero.exceptions.EjemploNotFoundException;
 import com.daw2.springprimero.model.Ejemplo;
 import com.daw2.springprimero.repository.EjemploRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,15 +21,29 @@ public class EjemploService {
     }
 
     public Ejemplo createEjemplo(Ejemplo ejemplo) {
-        if (ejemplo.getNombre() == null)
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Debe introducirse el nombre");
+        if (ejemplo.getNombre() == null || ejemplo.getNombre().isEmpty())
+            throw new EjemploBadRequestException("Debe introducirse el nombre");
+
+        if (ejemplo.getEdad() == null || ejemplo.getEdad() <= 0)
+            throw new EjemploBadRequestException("Debe introducirse la edad y debe ser mayor que 0");
+
         return ejemploRepository.save(ejemplo);
     }
 
     public Optional<Ejemplo> getEjemploById(Long id) {
-        return ejemploRepository.findById(id);
+
+        // return ejemploRepository.findById(id);
+        return Optional.ofNullable(ejemploRepository.findById(id).orElseThrow(
+                () -> new EjemploNotFoundException("No se ha encontrado la persona con id: " + id)
+        ));
     }
     public Ejemplo updateEjemplo(Ejemplo ejemplo) {
+        if (ejemplo.getNombre() == null || ejemplo.getNombre().isEmpty())
+            throw new EjemploBadRequestException("Debe introducirse el nombre");
+
+        if (ejemplo.getEdad() == null || ejemplo.getEdad() <= 0)
+            throw new EjemploBadRequestException("Debe introducirse la edad y debe ser mayor que 0");
+
         return ejemploRepository.save(ejemplo);
     }
 
@@ -40,5 +53,10 @@ public class EjemploService {
 
     // Otros métodos para operaciones específicas
 
-    public List<Ejemplo> getEjemplosByNombre(String nombre) { return ejemploRepository.findByNombreContainingIgnoreCase(nombre); }
+    public List<Ejemplo> getEjemplosByNombre(String nombre) {
+        return ejemploRepository.findByNombreContainingIgnoreCase(nombre);
+    }
+
 }
+
+
