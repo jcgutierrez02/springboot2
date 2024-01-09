@@ -2,14 +2,19 @@ package com.daw2.springprimero.controller;
 
 import com.daw2.springprimero.model.Ejemplo;
 import com.daw2.springprimero.service.EjemploService;
+import com.daw2.springprimero.util.ImageUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,11 +35,28 @@ public class EjemploController {
     @Operation(summary = "Crea una persona", description = "Añade una persona a la colección", tags = {"personas"})
     @ApiResponse(responseCode = "201", description = "Persona añadida")
     @ApiResponse(responseCode = "400", description = "Datos de persona no válidos")
-    @PostMapping("/persona")
+    @PostMapping(value = "/persona", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    public ResponseEntity<Ejemplo> createEjemplo(@RequestParam String nombre, @RequestParam Integer edad,
+                                   @RequestPart(name="imagen", required=false) MultipartFile imagen) throws IOException {
+/*
+        if (imagen == null)
+        {
+            ejemplo.setFoto(null);
+        }
+        else {
+            ejemplo.setFoto(imagen.getBytes());
+        }
+*/
+ /*   @PostMapping("/persona")
     public ResponseEntity<Ejemplo> createEjemplo(@RequestBody Ejemplo ejemplo) {
-        Ejemplo createdEjemplo = ejemploService.createEjemplo(ejemplo);
+
+    */
+        Ejemplo ejemplo = new Ejemplo(nombre, edad);
+        Ejemplo createdEjemplo = ejemploService.createEjemplo(ejemplo, imagen);
         return new ResponseEntity<>(createdEjemplo, HttpStatus.CREATED);
     }
+
+
     @Operation(summary = "Obtiene una Persona", description = "Obtiene una persona dado su id", tags = {"personas"})
     @Parameter(name = "id", description = "ID de la Persona", required = true, example = "1")
     @ApiResponse(responseCode = "200", description = "Persona encontrada")
@@ -65,6 +87,7 @@ public class EjemploController {
             Ejemplo existingEjemplo = optionalEjemplo.get();
             existingEjemplo.setNombre(ejemplo.getNombre());
             existingEjemplo.setEdad(ejemplo.getEdad());
+            existingEjemplo.setUpdated_at(LocalDateTime.now());
 
             Ejemplo updatedEjemplo = ejemploService.updateEjemplo(existingEjemplo);
             return new ResponseEntity<>(updatedEjemplo, HttpStatus.OK);

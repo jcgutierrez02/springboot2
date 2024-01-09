@@ -1,7 +1,11 @@
 package com.daw2.springprimero.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 
@@ -17,8 +21,16 @@ public class Ejemplo {
     private String nombre;
     @Column(name="edad", nullable = false)
     private Integer edad;
+
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name="foto", columnDefinition="longblob", nullable=true)
+    private byte[] foto;
+
     @Column(name="created_at")
     private LocalDateTime created_at = LocalDateTime.now();
+    @Column(name="updated_at")
+    private LocalDateTime updated_at = LocalDateTime.now();
 
     public Ejemplo() {
     }
@@ -27,6 +39,7 @@ public class Ejemplo {
         this.nombre = nombre;
         this.edad = edad;
     }
+
 
     @Override
     public String toString() {

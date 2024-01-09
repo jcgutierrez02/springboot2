@@ -4,9 +4,12 @@ import com.daw2.springprimero.exceptions.EjemploBadRequestException;
 import com.daw2.springprimero.exceptions.EjemploNotFoundException;
 import com.daw2.springprimero.model.Ejemplo;
 import com.daw2.springprimero.repository.EjemploRepository;
+import com.daw2.springprimero.util.ImageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,14 +23,17 @@ public class EjemploService {
         return ejemploRepository.findAll();
     }
 
-    public Ejemplo createEjemplo(Ejemplo ejemplo) {
+    public Ejemplo createEjemplo(Ejemplo ejemplo, MultipartFile file) throws IOException {
         if (ejemplo.getNombre() == null || ejemplo.getNombre().isEmpty())
             throw new EjemploBadRequestException("Debe introducirse el nombre");
 
         if (ejemplo.getEdad() == null || ejemplo.getEdad() <= 0)
             throw new EjemploBadRequestException("Debe introducirse la edad y debe ser mayor que 0");
 
-        return ejemploRepository.save(ejemplo);
+        Ejemplo ejemplosave = new Ejemplo(ejemplo.getNombre(), ejemplo.getEdad());
+        ejemplosave.setFoto(ImageUtils.compressImage(file.getBytes()));
+
+        return ejemploRepository.save(ejemplosave);
     }
 
     public Optional<Ejemplo> getEjemploById(Long id) {
