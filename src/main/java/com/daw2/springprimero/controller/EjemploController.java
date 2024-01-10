@@ -38,24 +38,11 @@ public class EjemploController {
     @PostMapping(value = "/persona", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public ResponseEntity<Ejemplo> createEjemplo(@RequestParam String nombre, @RequestParam Integer edad,
                                    @RequestPart(name="imagen", required=false) MultipartFile imagen) throws IOException {
-/*
-        if (imagen == null)
-        {
-            ejemplo.setFoto(null);
-        }
-        else {
-            ejemplo.setFoto(imagen.getBytes());
-        }
-*/
- /*   @PostMapping("/persona")
-    public ResponseEntity<Ejemplo> createEjemplo(@RequestBody Ejemplo ejemplo) {
 
-    */
-        Ejemplo ejemplo = new Ejemplo(nombre, edad);
-        Ejemplo createdEjemplo = ejemploService.createEjemplo(ejemplo, imagen);
+       // Ejemplo ejemplo = new Ejemplo(nombre, edad);
+        Ejemplo createdEjemplo = ejemploService.createEjemplo(new Ejemplo(nombre, edad), imagen);
         return new ResponseEntity<>(createdEjemplo, HttpStatus.CREATED);
     }
-
 
     @Operation(summary = "Obtiene una Persona", description = "Obtiene una persona dado su id", tags = {"personas"})
     @Parameter(name = "id", description = "ID de la Persona", required = true, example = "1")
@@ -74,20 +61,23 @@ public class EjemploController {
         }
 
     }
+
     @Operation(summary = "Actualiza una Persona", description = "Actualiza una Persona dado su id", tags = {"personas"})
     @Parameter(name = "id", description = "ID de la Persona", required = true, example = "1")
     @ApiResponse(responseCode = "200", description = "Persona actualizada")
     @ApiResponse(responseCode = "404", description = "Persona no encontrada")
     @ApiResponse(responseCode = "400", description = "Datos de persona no válidos")
-    @PutMapping("/persona/{id}")
-    public ResponseEntity<Ejemplo> updateEjemplo(@PathVariable Long id, @RequestBody Ejemplo ejemplo) {
+    @PutMapping(value = "/persona/{id}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    public ResponseEntity<Ejemplo> updateEjemplo(@PathVariable Long id, @RequestParam String nombre, @RequestParam Integer edad,
+                @RequestPart(name="imagen", required=false) MultipartFile imagen) throws IOException {
         Optional<Ejemplo> optionalEjemplo = ejemploService.getEjemploById(id);
 
         if (((Optional<?>) optionalEjemplo).isPresent()) {
             Ejemplo existingEjemplo = optionalEjemplo.get();
-            existingEjemplo.setNombre(ejemplo.getNombre());
-            existingEjemplo.setEdad(ejemplo.getEdad());
+            existingEjemplo.setNombre(nombre);
+            existingEjemplo.setEdad(edad);
             existingEjemplo.setUpdated_at(LocalDateTime.now());
+            existingEjemplo.setFoto(ImageUtils.compressImage(imagen.getBytes()));
 
             Ejemplo updatedEjemplo = ejemploService.updateEjemplo(existingEjemplo);
             return new ResponseEntity<>(updatedEjemplo, HttpStatus.OK);
@@ -129,8 +119,6 @@ public class EjemploController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-
-
 
 }
 
