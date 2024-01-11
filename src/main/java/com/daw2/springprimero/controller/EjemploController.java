@@ -6,15 +6,21 @@ import com.daw2.springprimero.util.ImageUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +30,33 @@ public class EjemploController {
 
     @Autowired
     private EjemploService ejemploService;
+
+
+    @GetMapping("/index")
+    public ModelAndView listado(Model modelo) throws UnsupportedEncodingException {
+        List<Ejemplo> personas = getAllEjemplos();
+        List<String> imagenesbase64 = new ArrayList<String>();
+
+        for (Ejemplo persona : personas) {
+            byte[] encodeBase64 = Base64.encodeBase64String(persona.getFoto()).getBytes();
+            String base64Encoded = new String(encodeBase64, "UTF-8");
+            imagenesbase64.add(base64Encoded);
+        }
+
+        modelo.addAttribute("listaPersonas", personas);
+        modelo.addAttribute("imagenesbase64", imagenesbase64);
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("listado.html");
+        return modelAndView;
+    }
+
+    /*
+    public String showUserList(Model model) {
+        model.addAttribute("users", userRepository.findAll());
+        return "index";
+    }
+    */
 
     @Operation(summary = "Obtiene todas las Personas", description = "Obtiene una lista de Personas", tags = {"personas"})
     @ApiResponse(responseCode = "200", description = "Lista de Personas")

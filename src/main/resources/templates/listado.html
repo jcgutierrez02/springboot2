@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+     <h1>En listado</h1>
+     <table  style="width:70%">
+         <tr th:each="persona : ${listaPersonas}">
+             <td th:text="${persona.nombre}"></td>
+             <td th:text="${persona.edad}"></td>
+         </tr>
+         <tr th:each="imagen : ${imagenesbase64}">
+             <td><img th:src="*{data:image/png;base64, ${imagen}}" /></td>
+         </tr>
+     </table>
+</body>
+</html>
