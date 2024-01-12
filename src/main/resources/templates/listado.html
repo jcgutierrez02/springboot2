@@ -3,16 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <!-- Las rutas en Thymeleaf son relativas al directorio static -->
+    <link rel="stylesheet" href="/css/estilos.css">
 </head>
 <body>
-     <h1>En listado</h1>
-     <table  style="width:70%">
-         <tr th:each="persona : ${listaPersonas}">
-             <td th:text="${persona.nombre}"></td>
-             <td th:text="${persona.edad}"></td>
-             <td><img th:src="@{src//main//resources//static//img//{img} (img=${persona.imagen})}" width="25%" /></td>
-         </tr>
-
-     </table>
+    <h1>Listado de personas</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre</th><th>Edad</th><th>Foto</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="persona : ${listaPersonas}">
+                <td th:text="${persona.nombre}"></td>
+                <td th:text="${persona.edad}"></td>
+                <td><img th:src="@{/img/{img} (img=${persona.imagen})}" /></td>
+            </tr>
+        </tbody>
+    </table>
 </body>
 </html>

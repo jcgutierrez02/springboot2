@@ -30,7 +30,7 @@ public class EjemploController {
     @Autowired
     private EjemploService ejemploService;
 
-    @GetMapping("/index")
+    @GetMapping("/listado")
     public ModelAndView listado(Model modelo) throws UnsupportedEncodingException {
         List<Ejemplo> personas = getAllEjemplos();
 
