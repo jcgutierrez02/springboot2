@@ -27,24 +27,14 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api")
 public class EjemploController {
-
     @Autowired
     private EjemploService ejemploService;
-
 
     @GetMapping("/index")
     public ModelAndView listado(Model modelo) throws UnsupportedEncodingException {
         List<Ejemplo> personas = getAllEjemplos();
-        List<String> imagenesbase64 = new ArrayList<String>();
-
-        for (Ejemplo persona : personas) {
-            byte[] encodeBase64 = Base64.encodeBase64String(persona.getFoto()).getBytes();
-            String base64Encoded = new String(encodeBase64, "UTF-8");
-            imagenesbase64.add(base64Encoded);
-        }
 
         modelo.addAttribute("listaPersonas", personas);
-        modelo.addAttribute("imagenesbase64", imagenesbase64);
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("listado.html");

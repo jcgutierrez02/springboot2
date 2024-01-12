@@ -10,10 +10,9 @@
          <tr th:each="persona : ${listaPersonas}">
              <td th:text="${persona.nombre}"></td>
              <td th:text="${persona.edad}"></td>
+             <td><img th:src="@{src//main//resources//static//img//{img} (img=${persona.imagen})}" width="25%" /></td>
          </tr>
-         <tr th:each="imagen : ${imagenesbase64}">
-             <td><img th:src="*{data:image/png;base64, ${imagen}}" /></td>
-         </tr>
+
      </table>
 </body>
 </html>

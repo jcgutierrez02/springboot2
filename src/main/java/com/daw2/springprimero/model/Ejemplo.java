@@ -22,6 +22,9 @@ public class Ejemplo {
     @Column(name="edad", nullable = false)
     private Integer edad;
 
+    @Column(name="imagen", nullable = false, length = 100)
+    private String imagen;
+    
     @Lob
     @Basic(fetch = FetchType.LAZY)
     @Column(name="foto", columnDefinition="longblob", nullable=true)

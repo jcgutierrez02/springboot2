@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,7 +34,24 @@ public class EjemploService {
             throw new EjemploBadRequestException("Debe introducirse la edad y debe ser mayor que 0");
 
         Ejemplo ejemplosave = new Ejemplo(ejemplo.getNombre(), ejemplo.getEdad());
-        ejemplosave.setFoto(ImageUtils.compressImage(file.getBytes()));
+
+        if (!file.isEmpty()) {
+            ejemplosave.setFoto(ImageUtils.compressImage(file.getBytes())); // Almacena el binario de la foto
+
+            // El resto de líneas es para almacenar la imagen en disco
+            Path dirImg = Paths.get("src//main//resources//static//img");
+            String rutaAbsoluta = dirImg.toFile().getAbsolutePath();
+
+            try {
+                byte[] bytesImg = file.getBytes();
+                Path rutaCompleta = Paths.get(rutaAbsoluta + "//" +
+                        file.getOriginalFilename());
+                Files.write(rutaCompleta, bytesImg);
+                ejemplosave.setImagen(file.getOriginalFilename());
+            } catch (IOException e) {
+                e.getStackTrace();
+            }
+        }
 
         return ejemploRepository.save(ejemplosave);
     }
