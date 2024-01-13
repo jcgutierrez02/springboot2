@@ -102,7 +102,7 @@ public class EjemploController {
             existingEjemplo.setUpdated_at(LocalDateTime.now());
             existingEjemplo.setFoto(ImageUtils.compressImage(imagen.getBytes()));
 
-            Ejemplo updatedEjemplo = ejemploService.updateEjemplo(existingEjemplo);
+            Ejemplo updatedEjemplo = ejemploService.updateEjemplo(existingEjemplo, imagen);
             return new ResponseEntity<>(updatedEjemplo, HttpStatus.OK);
         }
         else {

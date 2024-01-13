@@ -63,12 +63,30 @@ public class EjemploService {
                 () -> new EjemploNotFoundException("No se ha encontrado la persona con id: " + id)
         ));
     }
-    public Ejemplo updateEjemplo(Ejemplo ejemplo) {
+    public Ejemplo updateEjemplo(Ejemplo ejemplo, MultipartFile file) throws IOException {
         if (ejemplo.getNombre() == null || ejemplo.getNombre().isEmpty())
             throw new EjemploBadRequestException("Debe introducirse el nombre");
 
         if (ejemplo.getEdad() == null || ejemplo.getEdad() <= 0)
             throw new EjemploBadRequestException("Debe introducirse la edad y debe ser mayor que 0");
+
+        if (!file.isEmpty()) {
+            ejemplo.setFoto(ImageUtils.compressImage(file.getBytes())); // Almacena el binario de la foto
+
+            // El resto de líneas es para almacenar la imagen en disco
+            Path dirImg = Paths.get("src//main//resources//static//img");
+            String rutaAbsoluta = dirImg.toFile().getAbsolutePath();
+
+            try {
+                byte[] bytesImg = file.getBytes();
+                Path rutaCompleta = Paths.get(rutaAbsoluta + "//" +
+                        file.getOriginalFilename());
+                Files.write(rutaCompleta, bytesImg);
+                ejemplo.setImagen(file.getOriginalFilename());
+            } catch (IOException e) {
+                e.getStackTrace();
+            }
+        }
 
         return ejemploRepository.save(ejemplo);
     }
