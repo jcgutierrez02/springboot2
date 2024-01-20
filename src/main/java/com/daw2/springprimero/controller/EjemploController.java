@@ -6,12 +6,10 @@ import com.daw2.springprimero.util.ImageUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,7 +18,6 @@ import org.springframework.web.servlet.ModelAndView;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -134,6 +131,17 @@ public class EjemploController {
             return new ResponseEntity<>(ejemplos, HttpStatus.OK);
         }
         else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping(value = "/{id}/foto", produces = MediaType.IMAGE_PNG_VALUE)
+    @ResponseBody
+    public ResponseEntity<byte[]> descargarFoto(@PathVariable Long id) {
+        byte[] foto = ejemploService.descargarFoto(id);
+        if ( foto != null ) {
+            return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(foto);
+        } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }

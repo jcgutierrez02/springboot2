@@ -35,12 +35,13 @@ caption {
     margin-bottom: 0.8em;
 }
 
-caption::first-letter {
-    color: red;
+table td#disco, table td#blob {
+    width: 100px;
 }
 
-td img {
-    width: 50%;
+table td img {
+    width: 100%;
+
 }
 
 h1 {

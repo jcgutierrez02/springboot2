@@ -11,4 +11,6 @@ public interface EjemploRepository extends JpaRepository<Ejemplo, Long> {
     List<Ejemplo> findByNombreContainingIgnoreCase(String nombre);
 
     Optional<Ejemplo> findByNombre(String nomfich);
+
+    List<Ejemplo> findByFotoNotNull();
 }

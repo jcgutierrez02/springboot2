@@ -1,6 +1,7 @@
 package com.daw2.springprimero.service;
 
 import com.daw2.springprimero.exceptions.EjemploBadRequestException;
+import com.daw2.springprimero.exceptions.EjemploException;
 import com.daw2.springprimero.exceptions.EjemploNotFoundException;
 import com.daw2.springprimero.model.Ejemplo;
 import com.daw2.springprimero.repository.EjemploRepository;
@@ -36,6 +37,7 @@ public class EjemploService {
         Ejemplo ejemplosave = new Ejemplo(ejemplo.getNombre(), ejemplo.getEdad());
 
         if (!file.isEmpty()) {
+            ejemplosave.setImagen(file.getOriginalFilename());
             ejemplosave.setFoto(ImageUtils.compressImage(file.getBytes())); // Almacena en BD el binario de la foto
 
             // El resto de líneas es para almacenar la imagen en disco
@@ -47,11 +49,12 @@ public class EjemploService {
                 Path rutaCompleta = Paths.get(rutaAbsoluta + "//" +
                         file.getOriginalFilename());
                 Files.write(rutaCompleta, bytesImg);
-                ejemplosave.setImagen(file.getOriginalFilename());
             } catch (IOException e) {
-                e.getStackTrace();
+                throw new EjemploException("Error de escritura");
             }
         }
+        else
+            throw new EjemploBadRequestException("Debe introducirse el fichero imagen");
 
         return ejemploRepository.save(ejemplosave);
     }
@@ -71,7 +74,8 @@ public class EjemploService {
             throw new EjemploBadRequestException("Debe introducirse la edad y debe ser mayor que 0");
 
         if (!file.isEmpty()) {
-            ejemplo.setFoto(ImageUtils.compressImage(file.getBytes())); // Almacena el binario de la foto
+            ejemplo.setImagen(file.getOriginalFilename());
+            ejemplo.setFoto(ImageUtils.compressImage(file.getBytes())); // Almacena en BD el binario de la foto
 
             // El resto de líneas es para almacenar la imagen en disco
             Path dirImg = Paths.get("src//main//resources//static//img");
@@ -80,13 +84,14 @@ public class EjemploService {
             try {
                 byte[] bytesImg = file.getBytes();
                 Path rutaCompleta = Paths.get(rutaAbsoluta + "//" +
-                        file.getOriginalFilename());
+                                                    file.getOriginalFilename());
                 Files.write(rutaCompleta, bytesImg);
-                ejemplo.setImagen(file.getOriginalFilename());
             } catch (IOException e) {
-                e.getStackTrace();
+                throw new EjemploException("Error de escritura");
             }
         }
+        else
+           throw new EjemploBadRequestException("Debe introducirse el fichero imagen");
 
         return ejemploRepository.save(ejemplo);
     }
@@ -99,6 +104,11 @@ public class EjemploService {
 
     public List<Ejemplo> getEjemplosByNombre(String nombre) {
         return ejemploRepository.findByNombreContainingIgnoreCase(nombre);
+    }
+
+    public byte[] descargarFoto(Long id) {
+        Ejemplo ejemplo = ejemploRepository.findById(id).orElse(null);
+        return ejemplo != null ? ImageUtils.decompressImage(ejemplo.getFoto()) : null;
     }
 
 }

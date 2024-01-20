@@ -2,7 +2,7 @@
 <html lang="es" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Listado personas</title>
     <!-- Las rutas en Thymeleaf son relativas al directorio static -->
     <link rel="stylesheet" href="/css/estilos2.css">
 </head>
@@ -11,7 +11,7 @@
         <caption>Listado de personas</caption>
         <thead>
             <tr>
-                <th>Nombre</th><th>Edad</th><th>Archivo</th><th>Foto</th>
+                <th>Nombre</th><th>Edad</th><th>Archivo</th><th>FotoDisco</th><th>FotoBlob</th>
             </tr>
         </thead>
         <tbody>
@@ -19,7 +19,8 @@
                 <td th:text="${persona.nombre}"></td>
                 <td th:text="${persona.edad}"></td>
                 <td th:text="${persona.imagen}"></td>
-                <td><img th:src="@{/img/{img} (img=${persona.imagen})}" /></td>
+                <td id="disco"><img th:src="@{/img/{img} (img=${persona.imagen})}" alt="Imagen Ejemplo" /></td>
+                <td id="blob"><img th:src="@{'/api/' + ${persona.id} + '/foto'}" alt="Imagen Ejemplo" /></td>
             </tr>
         </tbody>
     </table>
