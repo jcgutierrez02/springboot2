@@ -30,7 +30,7 @@ public class EjemploController {
     @Autowired
     private EjemploService ejemploService;
 
-    @GetMapping("/listado")
+    @GetMapping("/personasview")
     public ModelAndView listado(Model modelo) throws UnsupportedEncodingException {
         List<Ejemplo> personas = getAllEjemplos();
 
@@ -41,12 +41,7 @@ public class EjemploController {
         return modelAndView;
     }
 
-    /*
-    public String showUserList(Model model) {
-        model.addAttribute("users", userRepository.findAll());
-        return "index";
-    }
-    */
+
 
     @Operation(summary = "Obtiene todas las Personas", description = "Obtiene una lista de Personas", tags = {"personas"})
     @ApiResponse(responseCode = "200", description = "Lista de Personas")

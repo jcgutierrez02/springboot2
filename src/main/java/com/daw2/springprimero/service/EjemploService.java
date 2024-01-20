@@ -36,7 +36,7 @@ public class EjemploService {
         Ejemplo ejemplosave = new Ejemplo(ejemplo.getNombre(), ejemplo.getEdad());
 
         if (!file.isEmpty()) {
-            ejemplosave.setFoto(ImageUtils.compressImage(file.getBytes())); // Almacena el binario de la foto
+            ejemplosave.setFoto(ImageUtils.compressImage(file.getBytes())); // Almacena en BD el binario de la foto
 
             // El resto de líneas es para almacenar la imagen en disco
             Path dirImg = Paths.get("src//main//resources//static//img");
