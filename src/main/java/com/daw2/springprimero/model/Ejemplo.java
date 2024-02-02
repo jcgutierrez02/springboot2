@@ -30,6 +30,10 @@ public class Ejemplo {
     @Column(name="foto", columnDefinition="longblob", nullable=true)
     private byte[] foto;
 
+    @ManyToOne
+    @JoinColumn(name = "genero_id")
+    private Genero genero;
+
     @Column(name="created_at")
     private LocalDateTime created_at = LocalDateTime.now();
     @Column(name="updated_at")

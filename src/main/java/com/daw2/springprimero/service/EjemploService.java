@@ -41,6 +41,9 @@ public class EjemploService {
             ejemplosave.setFoto(ImageUtils.compressImage(file.getBytes())); // Almacena en BD el binario de la foto
 
             // El resto de líneas es para almacenar la imagen en disco
+            // En despliegue para Docker sin DockerFile no podemos escribir en fichero.
+            // Por este motivo se comenta el código correspondienter
+            /*
             Path dirImg = Paths.get("src//main//resources//static//img");
             String rutaAbsoluta = dirImg.toFile().getAbsolutePath();
 
@@ -52,6 +55,7 @@ public class EjemploService {
             } catch (IOException e) {
                 throw new EjemploException("Error de escritura");
             }
+             */
         }
         else
             throw new EjemploBadRequestException("Debe introducirse el fichero imagen");
@@ -78,6 +82,9 @@ public class EjemploService {
             ejemplo.setFoto(ImageUtils.compressImage(file.getBytes())); // Almacena en BD el binario de la foto
 
             // El resto de líneas es para almacenar la imagen en disco
+            // En despliegue para Docker sin DockerFile no podemos escribir en fichero.
+            // Por este motivo se comenta el código correspondiente
+            /*
             Path dirImg = Paths.get("src//main//resources//static//img");
             String rutaAbsoluta = dirImg.toFile().getAbsolutePath();
 
@@ -89,6 +96,7 @@ public class EjemploService {
             } catch (IOException e) {
                 throw new EjemploException("Error de escritura");
             }
+            */
         }
         else
            throw new EjemploBadRequestException("Debe introducirse el fichero imagen");

@@ -83,8 +83,8 @@ public class EjemploController {
     @ApiResponse(responseCode = "404", description = "Persona no encontrada")
     @ApiResponse(responseCode = "400", description = "Datos de persona no válidos")
     @PutMapping(value = "/persona/{id}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public ResponseEntity<Ejemplo> updateEjemplo(@PathVariable Long id, @RequestParam String nombre, @RequestParam Integer edad,
-                @RequestPart(name="imagen", required=false) MultipartFile imagen) throws IOException {
+    public ResponseEntity<Ejemplo> updateEjemplo(@PathVariable Long id, @RequestParam String nombre,
+       @RequestParam Integer edad, @RequestPart(name="imagen", required=false) MultipartFile imagen) throws IOException {
         Optional<Ejemplo> optionalEjemplo = ejemploService.getEjemploById(id);
 
         if (((Optional<?>) optionalEjemplo).isPresent()) {
@@ -135,6 +135,10 @@ public class EjemploController {
         }
     }
 
+    @Operation(summary = "Muestra foto", description = "Obtiene foto de persona dado el id", tags = {"personas"})
+    @Parameter(name = "id", description = "ID de la Persona", required = true, example = "13")
+    @ApiResponse(responseCode = "200", description = "Foto de la persona")
+    @ApiResponse(responseCode = "404", description = "Persona no encontrada")
     @GetMapping(value = "/{id}/foto", produces = MediaType.IMAGE_PNG_VALUE)
     @ResponseBody
     public ResponseEntity<byte[]> descargarFoto(@PathVariable Long id) {
