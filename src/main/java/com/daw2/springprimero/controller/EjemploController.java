@@ -1,6 +1,7 @@
 package com.daw2.springprimero.controller;
 
 import com.daw2.springprimero.model.Ejemplo;
+import com.daw2.springprimero.model.Genero;
 import com.daw2.springprimero.service.EjemploService;
 import com.daw2.springprimero.util.ImageUtils;
 import io.swagger.v3.oas.annotations.Operation;
@@ -52,10 +53,11 @@ public class EjemploController {
     @ApiResponse(responseCode = "400", description = "Datos de persona no válidos")
     @PostMapping(value = "/persona", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public ResponseEntity<Ejemplo> createEjemplo(@RequestParam String nombre, @RequestParam Integer edad,
+                                   @RequestParam Long id_genero, @RequestParam String genero,
                                    @RequestPart(name="imagen", required=false) MultipartFile imagen) throws IOException {
 
        // Ejemplo ejemplo = new Ejemplo(nombre, edad);
-        Ejemplo createdEjemplo = ejemploService.createEjemplo(new Ejemplo(nombre, edad), imagen);
+        Ejemplo createdEjemplo = ejemploService.createEjemplo(new Ejemplo(nombre, edad, new Genero(id_genero, genero)), imagen);
         return new ResponseEntity<>(createdEjemplo, HttpStatus.CREATED);
     }
 

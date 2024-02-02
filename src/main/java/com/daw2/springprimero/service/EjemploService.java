@@ -4,6 +4,7 @@ import com.daw2.springprimero.exceptions.EjemploBadRequestException;
 import com.daw2.springprimero.exceptions.EjemploException;
 import com.daw2.springprimero.exceptions.EjemploNotFoundException;
 import com.daw2.springprimero.model.Ejemplo;
+import com.daw2.springprimero.model.Genero;
 import com.daw2.springprimero.repository.EjemploRepository;
 import com.daw2.springprimero.util.ImageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,20 @@ public class EjemploService {
         if (ejemplo.getEdad() == null || ejemplo.getEdad() <= 0)
             throw new EjemploBadRequestException("Debe introducirse la edad y debe ser mayor que 0");
 
-        Ejemplo ejemplosave = new Ejemplo(ejemplo.getNombre(), ejemplo.getEdad());
+        Long idGenero = ejemplo.getGenero().getId();
+
+        if (idGenero == null || idGenero <= 0 || idGenero > 3)
+            throw new EjemploBadRequestException("Debe introducirse valor de género entre 1 y 3");
+
+        String genero;
+        if ( idGenero == 1)
+            genero = "mujer";
+        else if ( idGenero == 2)
+            genero = "hombre";
+        else
+            genero = "indefinido";
+
+        Ejemplo ejemplosave = new Ejemplo(ejemplo.getNombre(), ejemplo.getEdad(), new Genero(idGenero, genero));
 
         if (!file.isEmpty()) {
             ejemplosave.setImagen(file.getOriginalFilename());
@@ -76,6 +90,21 @@ public class EjemploService {
 
         if (ejemplo.getEdad() == null || ejemplo.getEdad() <= 0)
             throw new EjemploBadRequestException("Debe introducirse la edad y debe ser mayor que 0");
+
+        Long idGenero = ejemplo.getGenero().getId();
+
+        if (idGenero == null || idGenero <= 0 || idGenero > 3)
+            throw new EjemploBadRequestException("Debe introducirse valor de género entre 1 y 3");
+
+        String genero;
+        if ( idGenero == 1)
+            genero = "mujer";
+        else if ( idGenero == 2)
+            genero = "hombre";
+        else
+            genero = "indefinido";
+
+        Ejemplo ejemplosave = new Ejemplo(ejemplo.getNombre(), ejemplo.getEdad(), new Genero(idGenero, genero));
 
         if (!file.isEmpty()) {
             ejemplo.setImagen(file.getOriginalFilename());

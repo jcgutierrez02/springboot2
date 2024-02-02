@@ -1,5 +1,6 @@
 package com.daw2.springprimero.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,6 +33,7 @@ public class Ejemplo {
 
     @ManyToOne
     @JoinColumn(name = "genero_id")
+    @JsonBackReference
     private Genero genero;
 
     @Column(name="created_at")
@@ -42,9 +44,10 @@ public class Ejemplo {
     public Ejemplo() {
     }
 
-    public Ejemplo(String nombre, Integer edad) {
+    public Ejemplo(String nombre, Integer edad, Genero genero) {
         this.nombre = nombre;
         this.edad = edad;
+        this.genero = genero;
     }
 
 
