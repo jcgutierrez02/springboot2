@@ -9,7 +9,6 @@ import java.util.List;
 @Entity
 @Table(name = "genero")
 public class Genero {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,6 +20,7 @@ public class Genero {
     @JsonManagedReference
     private List<Ejemplo> personas;
 
+    public Genero() {  }
     public Genero(Long id, String genero) {
         this.id = id;
         this.genero = genero;

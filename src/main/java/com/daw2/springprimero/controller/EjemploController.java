@@ -3,6 +3,7 @@ package com.daw2.springprimero.controller;
 import com.daw2.springprimero.model.Ejemplo;
 import com.daw2.springprimero.model.Genero;
 import com.daw2.springprimero.service.EjemploService;
+import com.daw2.springprimero.service.GeneroService;
 import com.daw2.springprimero.util.ImageUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -28,6 +29,9 @@ public class EjemploController {
     @Autowired
     private EjemploService ejemploService;
 
+    @Autowired
+    private GeneroService generoService;
+
     @GetMapping("/personasview")
     public ModelAndView listado(Model modelo) throws UnsupportedEncodingException {
         List<Ejemplo> personas = getAllEjemplos();
@@ -38,8 +42,6 @@ public class EjemploController {
         modelAndView.setViewName("listado.html");
         return modelAndView;
     }
-
-
 
     @Operation(summary = "Obtiene todas las Personas", description = "Obtiene una lista de Personas", tags = {"personas"})
     @ApiResponse(responseCode = "200", description = "Lista de Personas")
@@ -53,11 +55,21 @@ public class EjemploController {
     @ApiResponse(responseCode = "400", description = "Datos de persona no válidos")
     @PostMapping(value = "/persona", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public ResponseEntity<Ejemplo> createEjemplo(@RequestParam String nombre, @RequestParam Integer edad,
-                                   @RequestParam Long id_genero, @RequestParam String genero,
+                                   @RequestParam Long id_genero,
                                    @RequestPart(name="imagen", required=false) MultipartFile imagen) throws IOException {
 
-       // Ejemplo ejemplo = new Ejemplo(nombre, edad);
-        Ejemplo createdEjemplo = ejemploService.createEjemplo(new Ejemplo(nombre, edad, new Genero(id_genero, genero)), imagen);
+
+        /* Es necesario elegir un id de género existente */
+        Genero genero = new Genero();
+        Optional<Genero> optionalGenero = generoService.getGeneroById(id_genero);
+        if (((Optional<?>) optionalGenero).isPresent()) {
+            genero = optionalGenero.get();
+        }
+        else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        Ejemplo createdEjemplo = ejemploService.createEjemplo(new Ejemplo(nombre, edad, genero), imagen);
         return new ResponseEntity<>(createdEjemplo, HttpStatus.CREATED);
     }
 
@@ -86,13 +98,28 @@ public class EjemploController {
     @ApiResponse(responseCode = "400", description = "Datos de persona no válidos")
     @PutMapping(value = "/persona/{id}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public ResponseEntity<Ejemplo> updateEjemplo(@PathVariable Long id, @RequestParam String nombre,
-       @RequestParam Integer edad, @RequestPart(name="imagen", required=false) MultipartFile imagen) throws IOException {
+        @RequestParam Integer edad,  @RequestParam Long id_genero,
+        @RequestPart(name="imagen", required=false) MultipartFile imagen) throws IOException {
+
+        /* Es necesario elegir un id de género existente */
+        Genero genero = new Genero();
+        Optional<Genero> optionalGenero = generoService.getGeneroById(id_genero);
+        if (((Optional<?>) optionalGenero).isPresent()) {
+            genero = optionalGenero.get();
+        }
+        else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+
+        /* Tiene que existir la persona con ese id dado para poder actualizarla */
         Optional<Ejemplo> optionalEjemplo = ejemploService.getEjemploById(id);
 
         if (((Optional<?>) optionalEjemplo).isPresent()) {
             Ejemplo existingEjemplo = optionalEjemplo.get();
             existingEjemplo.setNombre(nombre);
             existingEjemplo.setEdad(edad);
+            existingEjemplo.setGenero(genero);
             existingEjemplo.setUpdated_at(LocalDateTime.now());
             existingEjemplo.setFoto(ImageUtils.compressImage(imagen.getBytes()));
 

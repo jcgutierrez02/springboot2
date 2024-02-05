@@ -50,7 +50,6 @@ public class Ejemplo {
         this.genero = genero;
     }
 
-
     @Override
     public String toString() {
         return "Ejemplo{" +
