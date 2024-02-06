@@ -10,11 +10,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,6 +26,18 @@ import java.util.Optional;
 public class GeneroController {
     @Autowired
     private GeneroService generoService;
+
+
+    @GetMapping("/generosview")
+    public ModelAndView listado(Model modelo) throws UnsupportedEncodingException {
+        List<Genero> generos = getAllGeneros();
+
+        modelo.addAttribute("listaGeneros", generos);
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("listadogen.html");
+        return modelAndView;
+    }
 
     @Operation(summary = "Obtiene todas los Géneros", description = "Obtiene una lista de Géneros", tags = {"generos"})
     @ApiResponse(responseCode = "200", description = "Lista de Géneros")
